@@ -2,28 +2,28 @@ const express = require('express');
 const fs = require("fs")
 const { json } = require('express/lib/response');
 
+var cors = require('cors')
 var app = express();
+
+app.use(cors());
+
 var port = 3200;
 var json_file = require('./inventory.json');
 var use_json_file = JSON.stringify(json_file);
 
-app.use(function(req, res, next) {
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:');
+// app.use(function(req, res, next) {
+//     // Website you wish to allow to connect
+//     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:');
 
-    //     // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//     //     // Request methods you wish to allow
+//     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
 
-    //     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-});
+//     //     // Request headers you wish to allow
+//     res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+// });
 
 app.get('/', (req, res) => {
-    // res.header("Access-Control-Allow-Origin", "localhost:");
-    // res.json(use_json_file);
-    console.log("get all articles")
-    res.send('hello')
-
+    res.json(use_json_file);
 
 })
 
