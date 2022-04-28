@@ -11,6 +11,7 @@ var port = 3200;
 var json_file = require('./inventory.json');
 var use_json_file = JSON.stringify(json_file);
 
+// This does not work, the cors library handle it for me. this is for future ref.
 // app.use(function(req, res, next) {
 //     // Website you wish to allow to connect
 //     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:');
@@ -23,16 +24,17 @@ var use_json_file = JSON.stringify(json_file);
 // });
 
 app.get('/', (req, res) => {
-    res.json(use_json_file);
+    res.json(json_file);
 
 })
 
 app.get('/articles/:productID', (req, res) => {
+    // res.send("Article " + req.params.productID);
 
     var id_to_get = req.params.productID;
-    var data_sent = json_file.articles[id_to_get];
+    var data_sent = json_file.articles[id_to_get - 1];
     data_sent = JSON.stringify(data_sent);
-    res.send('GET request to the homepage, id : ' + data_sent)
+    res.send('GET request to the homepage, Here is the article : ' + data_sent)
 })
 
 app.post('/add', (req, res) => {
@@ -53,11 +55,24 @@ app.post('/modify', (req, res) => {
 
 })
 
-app.delete('/delete/.id', (req, res) => {
+app.delete('/delete/:productID', (req, res) => {
     console.log("delete")
+    console.log(req.params.productID);
     var id_to_get = req.params.productID;
-    var data_delete = json_file.articles[id_to_get];
-    console.log(data_delete)
+    id_to_get = id_to_get.replace(":", "");
+    id_to_get = parseInt(id_to_get);
+    console.log({ id_to_get });
+    // console.log(json_file)
+    for (let index = 0; index < json_file.articles.length; index++) {
+        const element = json_file.articles[index];
+        console.log(element)
+        if (element.id == id_to_get) {
+            json_file.articles.splice(index, 1);
+            console.log("Found something to delete")
+            break;
+        }
+    }
+    console.log(json_file);
 })
 
 app.listen(port, () => {
