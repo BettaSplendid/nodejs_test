@@ -49,7 +49,24 @@ app.post('/modify', (req, res) => {
     console.log("Modify Article")
     console.log(req.body)
     res.send("Hello")
+    let found_thing = {};
+    for (let index = 0; index < json_file.articles.length; index++) {
+        const element = json_file.articles[index];
+        if (element.id == req.body.id) {
+            console.log(element);
+            element.id = req.body.id;
+            element.title = req.body.title;
+            element.description = req.body.description;
+            element.price = req.body.price;
+            element.currency = req.body.currency;
+            element.brand = req.body.brand;
+            console.log(element);
+            break;
+        }
 
+    }
+
+    fs.writeFileSync("./inventory.json", JSON.stringify(json_file))
 })
 
 app.delete('/delete/:productID', (req, res) => {
