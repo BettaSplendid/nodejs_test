@@ -1,11 +1,14 @@
 const express = require('express');
 const fs = require("fs")
 const { json } = require('express/lib/response');
+const bodyParser = require("body-parser");
 
-var cors = require('cors')
-var app = express();
+const cors = require('cors')
+const app = express();
 
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 var port = 3200;
 var json_file = require('./inventory.json');
@@ -38,20 +41,14 @@ app.get('/articles/:productID', (req, res) => {
 })
 
 app.post('/add', (req, res) => {
-    const newProduct = {
-        id: products.length + 1,
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        currency: req.body.currency,
-        brand: req.body.brand,
-    }
-    json_file.push(newProduct)
+    console.log("Add");
+    console.log(req.body.id);
 })
 
 app.post('/modify', (req, res) => {
-
-    let found_article = {}
+    console.log("Modify Article")
+    console.log(req.body)
+    res.send("Hello")
 
 })
 
