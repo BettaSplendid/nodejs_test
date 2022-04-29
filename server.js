@@ -2,9 +2,21 @@ const express = require('express');
 const fs = require("fs")
 const { json } = require('express/lib/response');
 const bodyParser = require("body-parser");
-
 const cors = require('cors')
 const app = express();
+
+const mysql = require('mysql');
+var con = mysql.createConnection({
+    host: "localhost",
+    user: "root",
+    password: "",
+    database: "nodejs_test"
+});
+
+con.connect(function(err) {
+    if (err) throw err;
+    console.log("Connected!");
+});
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
