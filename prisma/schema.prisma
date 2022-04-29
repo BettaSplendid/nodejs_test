@@ -13,8 +13,8 @@ datasource db {
 model Articles {
   id          Int    @id @default(autoincrement())
   title       String @unique
-  description String
-  price       Int
+  description String @db.VarChar(255)
+  price       Float
   currency    String
   brand       String
 }

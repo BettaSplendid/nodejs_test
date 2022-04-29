@@ -4,6 +4,8 @@ const { json } = require('express/lib/response');
 const bodyParser = require("body-parser");
 const cors = require('cors')
 const app = express();
+const { PrismaClient } = require('@prisma/client')
+const prisma = new PrismaClient()
 
 // const mysql = require('mysql');
 // var con = mysql.createConnection({
