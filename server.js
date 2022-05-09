@@ -6,6 +6,8 @@ const cors = require('cors')
 const app = express();
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
+const bcrypt = require("bcrypt");
+
 
 // const mysql = require('mysql');
 // var con = mysql.createConnection({
@@ -103,9 +105,18 @@ app.delete('/delete/:productID', (req, res) => {
     console.log(json_file);
 })
 
-app.post('/register', async(req, res) => {
+const { body, validationResult } = require('express-validator');
+app.post('/register', body("email").isEmail(), async(req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
     console.log(req.body)
     console.log("Creating the user with the following data")
+
+    let data_to_send = req.body
+
+
     const lapin = await prisma.user.findUnique({
         where: {
             email: req.body.email,
@@ -116,19 +127,45 @@ app.post('/register', async(req, res) => {
         res.json("User already exists")
         return
     }
+    console.log("User does not exist, creating")
 
+    let hash = bcrypt.hashSync(data_to_send.password, 5);
+
+    data_to_send.password = hash
+    console.log("sending to prisma")
+    console.log({ data_to_send })
+    await prisma.user.create({
+        data: data_to_send
+    })
+})
+
+
+app.post('/login', async(req, res) => {
+    console.log(req.body)
+    console.log("Logging in the user with the following data")
     try {
-        let attempt = await prisma.user.create({
-            data: req.body
+        const lapin = await prisma.user.findUnique({
+            where: {
+                email: req.body.email,
+            },
         })
+        if (lapin) {
+            // res.json("User exists")
+            console.log("User exists")
+        }
+        const result = bcrypt.compareSync(req.body.password, lapin.password);
+        console.log(result); // true
+        if (!result) {
+            res.json("Password is incorrect")
+            return;
+        }
+        res.json("Logged in!")
 
     } catch (error) {
         console.log(error)
-        console.log("Failure")
+        res.json(error)
     }
-    console.log("Successfully registered user!")
 
-    // res.json(req.body);
 })
 
 app.listen(port, () => {
