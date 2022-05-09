@@ -103,6 +103,34 @@ app.delete('/delete/:productID', (req, res) => {
     console.log(json_file);
 })
 
+app.post('/register', async(req, res) => {
+    console.log(req.body)
+    console.log("Creating the user with the following data")
+    const lapin = await prisma.user.findUnique({
+        where: {
+            email: req.body.email,
+        },
+    })
+    if (lapin) {
+        console.log("User already exists")
+        res.json("User already exists")
+        return
+    }
+
+    try {
+        let attempt = await prisma.user.create({
+            data: req.body
+        })
+
+    } catch (error) {
+        console.log(error)
+        console.log("Failure")
+    }
+    console.log("Successfully registered user!")
+
+    // res.json(req.body);
+})
+
 app.listen(port, () => {
     console.log("Hello World, server is working, port " + port);
     // console.log(json_file);
