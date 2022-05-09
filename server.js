@@ -7,6 +7,8 @@ const app = express();
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
 const bcrypt = require("bcrypt");
+const multer = require('multer')
+const upload = multer({ dest: './uploads' })
 
 const nodemailer = require("nodemailer");
 const transporter = nodemailer.createTransport({
@@ -195,6 +197,24 @@ app.post('/login', async(req, res) => {
         res.json(error)
     }
 
+})
+
+app.post('/csv', upload.single('fileinput'), async(req, res) => {
+    console.log("CSV func");
+    console.log(req.file, req.body);
+    // if (!req.files) {
+    //     res.send({
+    //         status: false,
+    //         message: 'No file uploaded'
+    //     })
+    //     return;
+    // }
+
+    // fs.readFileSync("./inventory.json", (err, data) => {
+    //     const content = data;
+    //     console.log(content);
+    // })
+    // res.json("csv")
 })
 
 app.listen(port, () => {
